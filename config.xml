@@ -86,16 +86,16 @@
     <gap:splash src="resources/android/splash/drawable-port-xxxhdpi-screen.png"   gap:platform="android" gap:qualifier="port-xxxhdpi"/>
 
 
-    <gap:splash src="resources/ios/splash/Default-568h@2x~iphone.png"     gap:platform="ios" width="640" height="1136"/>
-    <gap:splash src="resources/ios/splash/Default-667h.png"               gap:platform="ios" width="750" height="1334"/>
-    <gap:splash src="resources/ios/splash/Default-736h.png"               gap:platform="ios" width="1242" height="2208"/>
-    <gap:splash src="resources/ios/splash/Default-Landscape-736h.png"     gap:platform="ios" width="2208" height="1242"/>
-    <gap:splash src="resources/ios/splash/Default-Landscape@2x~ipad.png"  gap:platform="ios" width="2048" height="1536"/>
-    <gap:splash src="resources/ios/splash/Default-Landscape~ipad.png"     gap:platform="ios" width="1024" height="768"/>
-    <gap:splash src="resources/ios/splash/Default-Portrait@2x~ipad.png"   gap:platform="ios" width="1536" height="2048"/>
-    <gap:splash src="resources/ios/splash/Default-Portrait~ipad.png"      gap:platform="ios" width="768" height="1024"/>
-    <gap:splash src="resources/ios/splash/Default@2x~iphone.png"          gap:platform="ios" width="640" height="960"/>
-    <gap:splash src="resources/ios/splash/Default~iphone.png"             gap:platform="ios" width="320" height="480"/>
+    <gap:splash src="resources/ios/splash/Default-568h@2x~iphone_blue.png"     gap:platform="ios" width="640" height="1136"/>
+    <gap:splash src="resources/ios/splash/Default-667h_blue.png"               gap:platform="ios" width="750" height="1334"/>
+    <gap:splash src="resources/ios/splash/Default-736h_blue.png"               gap:platform="ios" width="1242" height="2208"/>
+    <gap:splash src="resources/ios/splash/Default-Landscape-736h_blue.png"     gap:platform="ios" width="2208" height="1242"/>
+    <gap:splash src="resources/ios/splash/Default-Landscape@2x~ipad_blue.png"  gap:platform="ios" width="2048" height="1536"/>
+    <gap:splash src="resources/ios/splash/Default-Landscape~ipad_blue.png"     gap:platform="ios" width="1024" height="768"/>
+    <gap:splash src="resources/ios/splash/Default-Portrait@2x~ipad_blue.png"   gap:platform="ios" width="1536" height="2048"/>
+    <gap:splash src="resources/ios/splash/Default-Portrait~ipad_blue.png"      gap:platform="ios" width="768" height="1024"/>
+    <gap:splash src="resources/ios/splash/Default@2x~iphone_blue.png"          gap:platform="ios" width="640" height="960"/>
+    <gap:splash src="resources/ios/splash/Default~iphone_blue.png"             gap:platform="ios" width="320" height="480"/>
 
     <gap:plugin name="org.apache.cordova.camera" />
     <gap:plugin name="org.apache.cordova.media-capture" />

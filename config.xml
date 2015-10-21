@@ -56,13 +56,13 @@
     <icon src="resources/android/icon/icon144.png"    gap:platform="android"    gap:density="xxhdpi" />
 
     <icon src="resources/ios/icon/icon-small-bath.png"         gap:platform="ios"      width="29" height="29" />
-    <icon src="resources/ios/icon/icon-small@2x.png"      gap:platform="ios"      width="58" height="58" />
-    <icon src="resources/ios/icon/icon-small-3x.png"      gap:platform="ios"      width="87" height="87" />
-    <icon src="resources/ios/icon/icon40.png"            gap:platform="ios"      width="40" height="40" />
-    <icon src="resources/ios/icon/icon-402x.png"         gap:platform="ios"      width="80" height="80" />
-    <icon src="resources/ios/icon/icon60.png"            gap:platform="ios"      width="60" height="60" />
-    <icon src="resources/ios/icon/icon-602x.png"         gap:platform="ios"      width="120" height="120" />
-    <icon src="resources/ios/icon/icon-603x.png"         gap:platform="ios"      width="180" height="180" />
+    <icon src="resources/ios/icon/icon-small@2x-bath.png"      gap:platform="ios"      width="58" height="58" />
+    <icon src="resources/ios/icon/icon-small-3x-bath.png"      gap:platform="ios"      width="87" height="87" />
+    <icon src="resources/ios/icon/icon40-bath.png"            gap:platform="ios"      width="40" height="40" />
+    <icon src="resources/ios/icon/icon-402x-bath.png"         gap:platform="ios"      width="80" height="80" />
+    <icon src="resources/ios/icon/icon60-bath.png"            gap:platform="ios"      width="60" height="60" />
+    <icon src="resources/ios/icon/icon-602x-bath.png"         gap:platform="ios"      width="120" height="120" />
+    <icon src="resources/ios/icon/icon-603x-bath.png"         gap:platform="ios"      width="180" height="180" />
     <icon src="resources/ios/icon/icon-57x57.png"            gap:platform="ios"      width="57" height="57" />
     <icon src="resources/ios/icon/icon-72x72.png"            gap:platform="ios"      width="72" height="72" />
     <icon src="resources/ios/icon/icon76.png"            gap:platform="ios"      width="76" height="76" />

@@ -34,7 +34,7 @@ angular.module('mm.addons.mod_page')
      * @return {Boolean}
      */
     self.isEnabled = function() {
-        return true;
+        return $mmSite.canDownloadFiles();
     };
 
     /**
@@ -167,7 +167,7 @@ angular.module('mm.addons.mod_page')
 
                     $mmaModPage.invalidateContent(module.id).then(function() {
                         $mmaModPage.getFileEventNames(module).then(function(eventNames) {
-                            previousState = $mmFilepool.mmFilepool.FILEOUTDATED;
+                            previousState = $mmFilepool.FILEOUTDATED;
                             addObservers(eventNames, false);
                             $mmaModPage.prefetchContent(module);
                             // Store module as dowloading.

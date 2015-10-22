@@ -39,8 +39,8 @@ angular.module('mm.core')
  * @name $mmSitesManager
  */
 .factory('$mmSitesManager', function($http, $q, $mmSitesFactory, md5, $mmLang, $mmConfig, $mmApp, $mmUtil, $mmEvents, $state,
-            mmCoreSitesStore, mmCoreCurrentSiteStore, mmCoreEventLogin, mmCoreEventLogout, $log, mmCoreEventSiteUpdated,
-            mmCoreEventSiteAdded, mmCoreEventSessionExpired) {
+            $translate, mmCoreSitesStore, mmCoreCurrentSiteStore, mmCoreEventLogin, mmCoreEventLogout, $log, mmCoreWSPrefix,
+            mmCoreEventSiteUpdated, mmCoreEventSiteAdded, mmCoreEventSessionExpired, mmCoreEventSiteDeleted) {
 
     $log = $log.getInstance('$mmSitesManager');
 
@@ -91,6 +91,8 @@ angular.module('mm.core')
 
         if (siteurl.indexOf('://localhost') == -1 && !$mmUtil.isValidURL(siteurl)) {
             return $mmLang.translateAndReject('mm.login.invalidsite');
+        } else if (!$mmApp.isOnline()) {
+            return $mmLang.translateAndReject('mm.core.networkerrormsg');
         } else {
 
             protocol = protocol || "https://";
@@ -129,7 +131,7 @@ angular.module('mm.core')
      */
     self.siteExists = function(siteurl) {
         // We pass fake parameters to make CORS work (without params, the script stops before allowing CORS).
-        return $http.head(siteurl + '/login/token.php?username=a&password=b&service=c', {timeout: 15000});
+        return $http.get(siteurl + '/login/token.php?username=a&password=b&service=c', {timeout: 30000});
     };
 
     /**
@@ -141,13 +143,26 @@ angular.module('mm.core')
      * @param {String} siteurl   The site url.
      * @param {String} username  User name.
      * @param {String} password  Password.
+     * @param {String} [service] Service to use. If not defined, it will be searched in memory.
      * @param {Boolean} retry    We are retrying with a prefixed URL.
      * @return {Promise}         A promise to be resolved when the token is retrieved.
      */
-    self.getUserToken = function(siteurl, username, password, retry) {
+    self.getUserToken = function(siteurl, username, password, service, retry) {
         retry = retry || false;
 
-        return determineService(siteurl).then(function(service) {
+        if (!$mmApp.isOnline()) {
+            return $mmLang.translateAndReject('mm.core.networkerrormsg');
+        }
+
+        var promise;
+
+        if (service) {
+            promise = $q.when(service);
+        } else {
+            promise = determineService(siteurl);
+        }
+
+        return promise.then(function(service) {
 
             var loginurl = siteurl + '/login/token.php';
             var data = {
@@ -170,9 +185,8 @@ angular.module('mm.core')
                             if (!retry && data.errorcode == "requirecorrectaccess") {
                                 siteurl = siteurl.replace("https://", "https://www.");
                                 siteurl = siteurl.replace("http://", "http://www.");
-                                logindata.siteurl = siteurl;
 
-                                return self.getUserToken(siteurl, username, password, true);
+                                return self.getUserToken(siteurl, username, password, service, true);
                             } else {
                                 return $q.reject(data.error);
                             }
@@ -203,7 +217,7 @@ angular.module('mm.core')
         var candidateSite = $mmSitesFactory.makeSite(undefined, siteurl, token);
 
         return candidateSite.fetchSiteInfo().then(function(infos) {
-            if (isValidMoodleVersion(infos.functions)) {
+            if (isValidMoodleVersion(infos)) {
                 var validation = validateSiteInfo(infos);
                 if (validation === true) {
                     var siteid = self.createSiteID(infos.siteurl, infos.username);
@@ -217,7 +231,9 @@ angular.module('mm.core')
                     self.login(siteid);
                     $mmEvents.trigger(mmCoreEventSiteAdded);
                 } else {
-                    return $mmLang.translateAndReject(validation);
+                    return $translate(validation.error, validation.params).then(function(error) {
+                        return $q.reject(error);
+                    });
                 }
             } else {
                 return $mmLang.translateAndReject('mm.login.invalidmoodleversion');
@@ -265,30 +281,56 @@ angular.module('mm.core')
     }
 
     /**
-     * Check for the minimum required version. We check for WebServices present, not for Moodle version.
-     * This may allow some hacks like using local plugins for adding missing functions in previous versions.
+     * Check for the minimum required version (Moodle 2.4).
      *
      * @param {Array} sitefunctions List of functions of the Moodle site.
      * @return {Boolean}            True if the moodle version is valid, false otherwise.
      */
-    function isValidMoodleVersion(sitefunctions) {
-        for(var i = 0; i < sitefunctions.length; i++) {
-            if (sitefunctions[i].name.indexOf("component_strings") > -1) {
-                return true;
+    function isValidMoodleVersion(infos) {
+        if (!infos) {
+            return false;
+        }
+
+        var minVersion = 2012120300, // Moodle 2.4 version.
+            minRelease = "2.4";
+
+        // Try to validate by version.
+        if (infos.version) {
+            var version = parseInt(infos.version);
+            if (!isNaN(version)) {
+                return version >= minVersion;
             }
         }
-        return false;
+
+        // We couldn't validate by version number. Let's try to validate by release number.
+        if (infos.release) {
+            var matches = infos.release.match(/^([\d|\.]*)/);
+            if (matches && matches.length > 1) {
+                return matches[1] >= minRelease;
+            }
+        }
+
+        // Couldn't validate by release either. Check if it uses local_mobile plugin.
+        var appUsesLocalMobile = false;
+        angular.forEach(infos.functions, function(func) {
+            if (func.name.indexOf(mmCoreWSPrefix) != -1) {
+                appUsesLocalMobile = true;
+            }
+        });
+
+        return appUsesLocalMobile;
     }
 
     /**
      * Check if site info is valid. If it's not, return error message.
      *
      * @param {Object} infos    Site info.
-     * @return {String|Boolean} Error message to show if info is not valid, true if info is valid.
+     * @return {Object|Boolean} Object with error message to show and its params if info is not valid, true if info is valid.
      */
     function validateSiteInfo(infos) {
-        if (typeof infos.downloadfiles !== 'undefined' && infos.downloadfiles !== 1) {
-            return 'mm.login.cannotdownloadfiles';
+        if (!infos.firstname || !infos.lastname) {
+            var moodleLink = '<a mm-browser href="' + infos.siteurl + '">' + infos.siteurl + '</a>';
+            return {error: 'mm.core.requireduserdatamissing', params: {'$a': moodleLink}};
         }
         return true;
     }
@@ -342,7 +384,9 @@ angular.module('mm.core')
                         // Site info is not valid. Logout the user and show an error message.
                         self.logout();
                         $state.go('mm_login.sites');
-                        $mmUtil.showErrorModal(validation, true);
+                        $translate(validation.error, validation.params).then(function(error) {
+                            $mmUtil.showErrorModal(error);
+                        });
                     }
                 });
             });
@@ -385,6 +429,8 @@ angular.module('mm.core')
                 }, function() {
                     // DB remove shouldn't fail, but we'll go ahead even if it does.
                     return site.deleteFolder();
+                }).then(function() {
+                    $mmEvents.trigger(mmCoreEventSiteDeleted, site);
                 });
             });
         });

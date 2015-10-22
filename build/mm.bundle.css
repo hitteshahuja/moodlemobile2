@@ -4227,6 +4227,12 @@ ion-tabs.tabs-color-active-dark .tab-item {
   cursor: default;
   pointer-events: none; }
 
+.nav-bar-tabs-top.hide ~ .view-container .tabs-top .tabs {
+  top: 0; }
+
+.pane[hide-nav-bar="true"] .has-tabs-top {
+  top: 49px; }
+
 /**
  * Menus
  * --------------------------------------------------
@@ -4253,7 +4259,8 @@ ion-tabs.tabs-color-active-dark .tab-item {
   box-shadow: -1px 0px 2px rgba(0, 0, 0, 0.2), 1px 0px 2px rgba(0, 0, 0, 0.2); }
 
 .menu-open .menu-content .pane, .menu-open .menu-content .scroll-content {
-  pointer-events: none; }
+  pointer-events: none;
+  overflow: hidden; }
 
 .grade-b .menu-content, .grade-c .menu-content {
   -webkit-box-sizing: content-box;
@@ -6438,7 +6445,7 @@ input[type="radio"][disabled], input[type="checkbox"][disabled], input[type="rad
     top: 0;
     bottom: 0;
     right: 0;
-    padding: 14px 48px 16px 16px;
+    padding: 0 48px 0 16px;
     max-width: 65%;
     border: none;
     background: #fff;
@@ -7734,6 +7741,24 @@ em {
       border-color: transparent;
       background: none; }
 
+.col-60 {
+  -webkit-box-flex: 0;
+  -webkit-flex: 0 0 60%;
+  -moz-box-flex: 0;
+  -moz-flex: 0 0 60%;
+  -ms-flex: 0 0 60%;
+  flex: 0 0 60%;
+  max-width: 60%; }
+
+.col-40 {
+  -webkit-box-flex: 0;
+  -webkit-flex: 0 0 40%;
+  -moz-box-flex: 0;
+  -moz-flex: 0 0 40%;
+  -ms-flex: 0 0 40%;
+  flex: 0 0 40%;
+  max-width: 40%; }
+
 .item-media {
   padding-left: 64px;
   min-height: 64px; }
@@ -7852,10 +7877,17 @@ em {
   left: 0;
   right: 0; }
 
+.mm-content-with-float {
+  display: inline-block;
+  width: 100%; }
+
 .mm-loading-container {
   width: 100%;
   text-align: center;
   margin-top: 10px; }
+
+.mm-loading-content {
+  height: 100%; }
 
 .spinner-right {
   position: absolute;
@@ -7879,6 +7911,28 @@ em {
     float: right;
     width: 24px; }
 
+.mm-media-adapt-width {
+  max-width: 100%; }
+
+img.mm-media-adapt-width {
+  height: auto; }
+
+.mm-adapted-img-container {
+  position: relative; }
+
+.mm-image-viewer-icon {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  color: black;
+  font-size: 20px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  line-height: 30px; }
+
 .scroll {
   height: 100%; }
 
@@ -7886,8 +7940,22 @@ em {
   height: 100%;
   width: 100%; }
 
-.mm-language-select {
-  padding-bottom: 14px !important; }
+/**
+ * This CSS uses adjacent selectors instead of general sibling (~) selectors
+ * for ion radio that are broken in iOS 9 UIWebView.
+ *
+ * To apply the patch, include this CSS after your ionic.css include.
+ */
+.item-radio input:checked + .radio-content .item-content {
+  /* style the item content when its checked */
+  background: #f7f7f7; }
+
+.item-radio input:checked + .radio-content .radio-icon {
+  /* show the checkmark icon when its checked */
+  visibility: visible; }
+
+#mm-settings-languagelabel {
+  color: #000; }
 
 .bar-side-menu {
   border-color: transparent;
@@ -7999,9 +8067,6 @@ input.mma-files-picker {
 .mma-messages-discussion-container {
   padding-bottom: 15px; }
 
-.mma-book-arrows {
-  font-size: 32px; }
-
 .mma-chat-notice {
   text-align: center;
   margin-top: 10px; }
@@ -8038,8 +8103,47 @@ input.mma-files-picker {
 .mma-forum-discussion-link {
   text-decoration: none; }
 
-.mma-imscp-arrows {
-  font-size: 32px; }
+.mma-forum-align-right {
+  justify-content: flex-end; }
+
+.mma-forum-border {
+  border-color: #ddd;
+  border-width: 1px;
+  border-style: solid; }
+
+.mma-forum-textarea {
+  width: 100%;
+  height: 200px;
+  resize: none; }
+
+.mma-imscp-container {
+  display: flex;
+  flex-flow: column;
+  height: 100%; }
+
+.mma-imscp-iframe-container {
+  flex: 1 1 auto;
+  position: relative; }
+  .mma-imscp-iframe-container .iframe-wrapper {
+    position: absolute; }
+
+.mma-mod_survey-darkbg {
+  background-color: #f5f5f5; }
+
+.mma-mod_survey-padding-top {
+  padding-top: 20px; }
+
+textarea.mma-mod_survey-textarea {
+  height: 100px;
+  border: 1px solid #ddd; }
+
+select.mma-mod_survey-select {
+  background-color: transparent;
+  padding-left: 0px;
+  padding-right: 32px;
+  max-width: 100%; }
+  select.mma-mod_survey-select .mma-mod_survey-defaultoption {
+    display: none; }
 
 .button.active, .button.activated {
   box-shadow: none;

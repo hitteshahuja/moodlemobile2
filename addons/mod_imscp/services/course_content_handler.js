@@ -36,7 +36,7 @@ angular.module('mm.addons.mod_imscp')
     self.isEnabled = function() {
         var version = $mmSite.getInfo().version;
         // Require Moodle 2.9.
-        return version && (parseInt(version) >= 2015051100);
+        return version && (parseInt(version) >= 2015051100) && $mmSite.canDownloadFiles();
     };
 
     /**
@@ -169,7 +169,7 @@ angular.module('mm.addons.mod_imscp')
 
                     $mmaModImscp.invalidateContent(module.id).then(function() {
                         $mmaModImscp.getFileEventNames(module).then(function(eventNames) {
-                            previousState = $mmFilepool.mmFilepool.FILEOUTDATED;
+                            previousState = $mmFilepool.FILEOUTDATED;
                             addObservers(eventNames, false);
                             $mmaModImscp.prefetchContent(module);
                             // Store module as dowloading.

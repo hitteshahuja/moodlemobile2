@@ -112,6 +112,19 @@ angular.module('mm.core')
         };
 
         /**
+         * Closes the keyboard if plugin is available.
+         *
+         * @return {Boolean} True if plugin is available, false otherwise.
+         */
+        self.closeKeyboard = function() {
+            if (typeof cordova != 'undefined' && cordova.plugins && cordova.plugins.Keyboard && cordova.plugins.Keyboard.close) {
+                cordova.plugins.Keyboard.close();
+                return true;
+            }
+            return false;
+        };
+
+        /**
          * Get the application global database.
          * @return {Object} App's DB.
          */
@@ -158,6 +171,18 @@ angular.module('mm.core')
         };
 
         /**
+         * Checks if the app is running in a real device with cordova-plugin-device installed.
+         *
+         * @module mm.core
+         * @ngdoc method
+         * @name $mmApp#isDevice
+         * @return {Bool} True if device is defined, false otherwise.
+         */
+        self.isDevice = function() {
+            return !!window.device;
+        };
+
+        /**
          * Returns whether we are online.
          *
          * @module mm.core
@@ -169,7 +194,12 @@ angular.module('mm.core')
          * Note that a browser is always considered being online.
          */
         self.isOnline = function() {
-            return typeof navigator.connection === 'undefined' || $cordovaNetwork.isOnline();
+            var online = typeof navigator.connection === 'undefined' || $cordovaNetwork.isOnline();
+            // Double check we are not online because we cannot rely 100% in Cordova APIs.
+            if (!online && navigator.onLine) {
+                online = true;
+            }
+            return online;
         };
 
         /*

@@ -8196,6 +8196,8 @@ angular.module('mm.addons.files')
         self.sideMenuNav = function() {
         var self = {};
                 self.isEnabled = function() {
+                    //Hack to stop 'My Files' showing up in the sideMenu -UoB
+                    return false;
             return $mmaFiles.isPluginEnabled();
         };
                 self.getController = function() {
